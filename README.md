@@ -1,3 +1,80 @@
+-- Superscript.br - Fly, Corrida, Super Pulo, Chão Invisível, Fog, Velocidade customizável
+local plr = game.Players.LocalPlayer
+local char = plr.Character or plr.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+local hrp = char:WaitForChild("HumanoidRootPart")
+local runService = game:GetService("RunService")
+local lighting = game:GetService("Lighting")
+local terrain = workspace.Terrain
+
+-- GUI principal
+local gui = Instance.new("ScreenGui", plr.PlayerGui)
+gui.Name = "superscriptGUI"
+gui.ResetOnSpawn = false
+
+-- Título no canto superior esquerdo
+local titulo = Instance.new("TextLabel", gui)
+titulo.Text = "superscript.br"
+titulo.Position = UDim2.new(0, 10, 0, 10)
+titulo.Size = UDim2.new(0, 140, 0, 25)
+titulo.BackgroundTransparency = 1
+titulo.TextColor3 = Color3.fromRGB(200, 200, 200)
+titulo.Font = Enum.Font.GothamSemibold
+titulo.TextSize = 14
+titulo.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Janela principal
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 200, 0, 210)
+frame.Position = UDim2.new(0, 10, 0, 50)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+-- Criar botão padrão
+local function criarBotao(texto, y, cor)
+	local btn = Instance.new("TextButton", frame)
+	btn.Size = UDim2.new(1, -20, 0, 30)
+	btn.Position = UDim2.new(0, 10, 0, y)
+	btn.BackgroundColor3 = cor or Color3.fromRGB(60, 120, 255)
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.SourceSansBold
+	btn.TextSize = 14
+	btn.Text = texto
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+	return btn
+end
+
+-- Botões
+local btnFlyCam = criarBotao("Fly Cam: ON", 10)
+local btnFog = criarBotao("Remover Fog", 50)
+local btnVelocidade = criarBotao("Velocidade: ON", 90)
+local btnFechar = criarBotao("Fechar", 170, Color3.fromRGB(200, 50, 50))
+
+-- Dropdown de seleção de velocidade
+local velocidadeSelecionada = 300
+local dropdown = Instance.new("TextButton", frame)
+dropdown.Size = UDim2.new(1, -20, 0, 30)
+dropdown.Position = UDim2.new(0, 10, 0, 130)
+dropdown.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+dropdown.TextColor3 = Color3.new(1,1,1)
+dropdown.Font = Enum.Font.SourceSansBold
+dropdown.TextSize = 14
+dropdown.Text = "Velocidade: 300"
+Instance.new("UICorner", dropdown).CornerRadius = UDim.new(0, 6)
+
+local opcoes = {200, 250, 300, 350}
+local index = 3
+
+dropdown.MouseButton1Click:Connect(function()
+	index += 1
+	if index > #opcoes then index = 1 end
+	velocidadeSelecionada = opcoes[index]
+	dropdown.Text = "Velocidade: " .. velocidadeSelecionada
+end)
+
 -- Ativar velocidade
 local velocidadeAtiva = true
 
