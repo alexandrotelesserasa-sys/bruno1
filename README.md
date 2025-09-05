@@ -1,78 +1,135 @@
-if game.PlaceId == 2753915549 then
-    World1 = true
-elseif game.PlaceId == 4442272183 then
-    World2 = true
-elseif game.PlaceId == 7449423635 then
-    World3 = true
-else
-    game:GetService("Players").LocalPlayer:Kick("Do not Support, Please wait...")
+-- Ativar velocidade
+local velocidadeAtiva = true
+
+-- Corrida automática (com controle)
+task.spawn(function()
+	while task.wait(0.03) do
+		if velocidadeAtiva and humanoid.MoveDirection.Magnitude > 0 and not humanoid.PlatformStand then
+			local move = humanoid.MoveDirection
+			hrp.CFrame = CFrame.new(hrp.Position + move * velocidadeSelecionada * 0.03)
+		end
+	end
+end)
+
+btnVelocidade.MouseButton1Click:Connect(function()
+	velocidadeAtiva = not velocidadeAtiva
+	btnVelocidade.Text = velocidadeAtiva and "Velocidade: ON" or "Velocidade: OFF"
+	btnVelocidade.BackgroundColor3 = velocidadeAtiva and Color3.fromRGB(60,120,255) or Color3.fromRGB(80,80,80)
+end)
+
+-- Fly com câmera
+local flyCam = true
+local gyro, velo, con
+
+local function ativarFlyCam()
+	if flyCam then
+		gyro = Instance.new("BodyGyro", hrp)
+		gyro.P = 9e4
+		gyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+		gyro.CFrame = hrp.CFrame
+
+		velo = Instance.new("BodyVelocity", hrp)
+		velo.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+		velo.Velocity = Vector3.zero
+
+		humanoid.PlatformStand = true
+
+		con = runService.RenderStepped:Connect(function()
+			local cam = workspace.CurrentCamera
+			local dir = humanoid.MoveDirection
+			if dir.Magnitude > 0 then
+				velo.Velocity = cam.CFrame.LookVector.Unit * velocidadeSelecionada * dir.Magnitude
+			else
+				velo.Velocity = Vector3.zero
+			end
+			gyro.CFrame = cam.CFrame
+		end)
+	end
 end
 
-function CheckQuest() 
-    MyLevel = game:GetService("Players").LocalPlayer.Data.Level.Value
-    if World1 then
-        if MyLevel == 1 or MyLevel <= 9 then
-            Mon = "Bandit"
-            LevelQuest = 1
-            NameQuest = "BanditQuest1"
-            NameMon = "Bandit"
-            CFrameQuest = CFrame.new(1059.37195, 15.4495068, 1550.4231, 0.939700544, -0, -0.341998369, 0, 1, -0, 0.341998369, 0, 0.939700544)
-            CFrameMon = CFrame.new(1045.962646484375, 27.00250816345215, 1560.8203125)
-        elseif MyLevel == 10 or MyLevel <= 14 then
-            Mon = "Monkey"
-            LevelQuest = 1
-            NameQuest = "JungleQuest"
-            NameMon = "Monkey"
-            CFrameQuest = CFrame.new(-1598.08911, 35.5501175, 153.377838, 0, 0, 1, 0, 1, -0, -1, 0, 0)
-            CFrameMon = CFrame.new(-1448.51806640625, 67.85301208496094, 11.46579647064209)
-        elseif MyLevel == 15 or MyLevel <= 29 then
-            Mon = "Gorilla"
-            LevelQuest = 2
-            NameQuest = "JungleQuest"
-            NameMon = "Gorilla"
-            CFrameQuest = CFrame.new(-1598.08911, 35.5501175, 153.377838, 0, 0, 1, 0, 1, -0, -1, 0, 0)
-            CFrameMon = CFrame.new(-1129.8836669921875, 40.46354675292969, -525.4237060546875)
-        elseif MyLevel == 30 or MyLevel <= 39 then
-            Mon = "Pirate"
-            LevelQuest = 1
-            NameQuest = "BuggyQuest1"
-            NameMon = "Pirate"
-            CFrameQuest = CFrame.new(-1141.07483, 4.10001802, 3831.5498, 0.965929627, -0, -0.258804798, 0, 1, -0, 0.258804798, 0, 0.965929627)
-            CFrameMon = CFrame.new(-1103.513427734375, 13.752052307128906, 3896.091064453125)
-        elseif MyLevel == 40 or MyLevel <= 59 then
-            Mon = "Brute"
-            LevelQuest = 2
-            NameQuest = "BuggyQuest1"
-            NameMon = "Brute"
-            CFrameQuest = CFrame.new(-1141.07483, 4.10001802, 3831.5498, 0.965929627, -0, -0.258804798, 0, 1, -0, 0.258804798, 0, 0.965929627)
-            CFrameMon = CFrame.new(-1140.083740234375, 14.809885025024414, 4322.92138671875)
-        elseif MyLevel == 60 or MyLevel <= 74 then
-            Mon = "Desert Bandit"
-            LevelQuest = 1
-            NameQuest = "DesertQuest"
-            NameMon = "Desert Bandit"
-            CFrameQuest = CFrame.new(894.488647, 5.14000702, 4392.43359, 0.819155693, -0, -0.573571265, 0, 1, -0, 0.573571265, 0, 0.819155693)
-            CFrameMon = CFrame.new(924.7998046875, 6.44867467880249, 4481.5859375)
-        elseif MyLevel == 75 or MyLevel <= 89 then
-            Mon = "Desert Officer"
-            LevelQuest = 2
-            NameQuest = "DesertQuest"
-            NameMon = "Desert Officer"
-            CFrameQuest = CFrame.new(894.488647, 5.14000702, 4392.43359, 0.819155693, -0, -0.573571265, 0, 1, -0, 0.573571265, 0, 0.819155693)
-            CFrameMon = CFrame.new(1608.2822265625, 8.614224433898926, 4371.00732421875)
-        elseif MyLevel == 90 or MyLevel <= 99 then
-            Mon = "Snow Bandit"
-            LevelQuest = 1
-            NameQuest = "SnowQuest"
-            NameMon = "Snow Bandit"
-            CFrameQuest = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, 0, 0.939684391, 0, 1, 0, -0.939684391, 0, -0.342042685)
-            CFrameMon = CFrame.new(1354.347900390625, 87.27277374267578, -1393.946533203125)
-        elseif MyLevel == 100 or MyLevel <= 119 then
-            Mon = "Snowman"
-            LevelQuest = 2
-            NameQuest = "SnowQuest"
-            NameMon = "Snowman"
-            CFrameQuest = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, 0, 0.939684391, 0, 1, 0, -0.939684391, 0, -0.342042685)
-            CFrameMon = CFrame.new(1201.6412353515625, 144.57958984375, -1550.0670166015625)
-        elseif MyLevel == 120 or MyLevel <= 149 then
-            Mon = "Chief Petty Officer"
+local function desativarFlyCam()
+	flyCam = false
+	humanoid.PlatformStand = false
+	if gyro then gyro:Destroy() end
+	if velo then velo:Destroy() end
+	if con then con:Disconnect() end
+end
+
+btnFlyCam.MouseButton1Click:Connect(function()
+	if flyCam then
+		desativarFlyCam()
+		btnFlyCam.Text = "Fly Cam: OFF"
+		btnFlyCam.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	else
+		flyCam = true
+		ativarFlyCam()
+		btnFlyCam.Text = "Fly Cam: ON"
+		btnFlyCam.BackgroundColor3 = Color3.fromRGB(60, 120, 255)
+	end
+end)
+ativarFlyCam()
+
+-- Remover fog
+btnFog.MouseButton1Click:Connect(function()
+	lighting.FogStart = 999999
+	lighting.FogEnd = 999999
+	local atm = lighting:FindFirstChildOfClass("Atmosphere")
+	if atm then atm:Destroy() end
+	btnFog.Text = "Fog Removido"
+	btnFog.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	btnFog.Active = false
+end)
+
+-- Super pulo
+humanoid.JumpPower = 300
+humanoid.StateChanged:Connect(function(state)
+	if state == Enum.HumanoidStateType.Jumping then
+		humanoid.JumpPower = 300
+	end
+end)
+
+-- Chão invisível sobre água (automático)
+task.spawn(function()
+	local resolucao = 4
+	local area = Region3.new(Vector3.new(-2048, -10, -2048), Vector3.new(2048, 100, 2048)):ExpandToGrid(resolucao)
+	local materiais = terrain:ReadVoxels(area, resolucao)
+
+	local tamanho = resolucao
+	local base = area.CFrame.Position - (area.Size / 2)
+
+	for x = 1, materiais.Size.X do
+		for y = 1, materiais.Size.Y do
+			for z = 1, materiais.Size.Z do
+				if materiais[x][y][z] == Enum.Material.Water then
+					local pos = base + Vector3.new((x - 1) * tamanho, (y - 1) * tamanho, (z - 1) * tamanho)
+					local parte = Instance.new("Part")
+					parte.Size = Vector3.new(tamanho, 1, tamanho)
+					parte.Position = Vector3.new(pos.X, pos.Y + 2, pos.Z)
+					parte.Anchored = true
+					parte.CanCollide = true
+					parte.Transparency = 1
+					parte.Name = "ChaoInvisivelAgua"
+					parte.Parent = workspace
+				end
+			end
+		end
+	end
+end)
+
+-- Fechar interface
+btnFechar.MouseButton1Click:Connect(function()
+	gui:Destroy()
+	for _, obj in pairs(workspace:GetChildren()) do
+		if obj.Name == "ChaoInvisivelAgua" then
+			obj:Destroy()
+		end
+	end
+end)
+
+-- Super pulo ao renascer
+plr.CharacterAdded:Connect(function(novoChar)
+	char = novoChar
+	humanoid = char:WaitForChild("Humanoid")
+	hrp = char:WaitForChild("HumanoidRootPart")
+	humanoid.JumpPower = 300
+end)
